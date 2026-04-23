@@ -49,5 +49,16 @@ habit-tracker/
 │
 ├── .gitignore
 └── README.md ```
+## ▶️ Usage
+
+## 🧪 Running Tests
+
+Run all tests with coverage:
+
+```bash
+python -m pytest --cov=src
+### 📦 Data Storage
+Habits are persisted locally using a JSON file (`habits.json`) via a dedicated storage module.
+
 
 

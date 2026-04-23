@@ -1,7 +1,7 @@
 from habit_manager import HabitManager
 import analytics
 
-manager = HabitManager()
+manager = HabitManager("habits.json")
 
 def show_menu():
     print("\n=== Habit Tracker ===")

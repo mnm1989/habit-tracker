@@ -1,21 +1,31 @@
 import json
-from pathlib import Path
+from typing import List
+from habit import Habit
 
-FILE_PATH = Path(__file__).resolve().parent / "habits.json"
 
-def load_habits():
+def load_habits(file_path: str) -> List[Habit]:
+    """
+    Load habits from a JSON file.
+
+    :param file_path: Path to the JSON storage file
+    :return: List of Habit objects
+    """
     try:
-        with open(FILE_PATH, "r", encoding="utf-8") as f:
-            data = json.load(f)
-
-        # لازم يكون List of dicts
-        if isinstance(data, list):
-            return [x for x in data if isinstance(x, dict)]
-        return []
-
+        with open(file_path, "r", encoding="utf-8") as file:
+            data = json.load(file)
+            return [Habit.from_dict(item) for item in data]
     except FileNotFoundError:
         return []
-    except json.JSONDecodeError:
-        # إذا الملف فاضي/مخربط JSON
-        return []
+
+
+def save_habits(file_path: str, habits: List[Habit]) -> None:
+    """
+    Save habits to a JSON file.
+
+    :param file_path: Path to the JSON storage file
+    :param habits: List of Habit objects
+    """
+    with open(file_path, "w", encoding="utf-8") as file:
+        json.dump([habit.to_dict() for habit in habits], file, indent=4)
+
 
