@@ -1,40 +1,31 @@
-from typing import List
+from datetime import date
 from habit import Habit
-from storage import load_habits, save_habits
+import storage
 
 
 class HabitManager:
-    """
-    Manages creation, storage, and retrieval of habits.
-    """
+    def __init__(self, file_path=None):
+        if file_path is not None:
+            storage.DATA_FILE = file_path
+        self.habits = [Habit.from_dict(h) if isinstance(h, dict) else h for h in storage.load_habits()]
 
-    def __init__(self, file_path: str):
-        """
-        Initialize the habit manager.
+    def add_habit(self, name, periodicity):
+        if any(h.name.lower() == name.lower() for h in self.habits):
+            return False
 
-        :param file_path: Path to the JSON storage file
-        """
-        self.file_path: str = file_path
-        self.habits: List[Habit] = load_habits(file_path)
+        new_habit = Habit(name, periodicity)
+        self.habits.append(new_habit)
+        storage.save_habits([h.__dict__ for h in self.habits])
+        return True
 
-    def add_habit(self, name: str, periodicity: str) -> Habit:
-        """
-        Create and store a new habit.
-
-        :param name: Name of the habit
-        :param periodicity: Habit frequency
-        :return: The created Habit object
-        """
-        habit = Habit(name, periodicity)
-        self.habits.append(habit)
-        save_habits(self.file_path, self.habits)
-        return habit
-
-    def get_habits(self) -> List[Habit]:
-        """
-        Retrieve all stored habits.
-
-        :return: List of habits
-        """
+    def list_habits(self):
         return self.habits
 
+    def checkoff(self, name):
+        today = date.today().isoformat()
+        for h in self.habits:
+            if h.name.lower() == name.lower():
+                h.checkoff(today)
+                storage.save_habits([h.__dict__ for h in self.habits])
+                return True
+        return False

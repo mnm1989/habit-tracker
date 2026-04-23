@@ -27,3 +27,20 @@ class Habit:
         """
         if date_str not in self.checkoffs:
             self.checkoffs.append(date_str)
+class Habit:
+    def __init__(self, name, periodicity):
+        self.name = name
+        self.periodicity = periodicity
+        self.created_at = datetime.now().isoformat(timespec="seconds")
+        self.checkoffs = []
+
+    def checkoff(self, date_str):
+        if date_str not in self.checkoffs:
+            self.checkoffs.append(date_str)
+
+    @classmethod
+    def from_dict(cls, data):
+        habit = cls(data["name"], data["periodicity"])
+        habit.created_at = data["created_at"]
+        habit.checkoffs = data["checkoffs"]
+        return habit
